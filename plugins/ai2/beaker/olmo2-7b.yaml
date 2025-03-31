@@ -1,0 +1,44 @@
+version: v2
+budget: ai2/oe-adapt
+description: "VLLM Server for OLMo-2-1124-7B-Instruct"
+tasks:
+  - name: "host-vllm"
+    image:
+      beaker: ai2/pytorch2.0.0-cuda11.8-python3.10
+    command: ["/bin/sh", "-c"]
+    arguments:
+      [
+        "pip install vllm && ray start --head --port=8888 && vllm serve /weka/oe-adapt-default/ljm/models/OLMo-2-1124-7B-Instruct --tensor-parallel-size 2 --pipeline-parallel-size 2 --max-model-len 4096 --trust-remote-code --enforce-eager",
+      ]
+    hostNetworking: true
+    datasets:
+      - mountPath: /weka/oe-adapt-default
+        source:
+          weka: oe-adapt-default
+    constraints:
+      cluster:
+        - ai2/jupiter-cirrascale-2
+    resources:
+      gpuCount: 2
+    context:
+      priority: urgent
+  - name: "worker-vllm"
+    image:
+      beaker: ai2/pytorch2.0.0-cuda11.8-python3.10
+    command: ["/bin/sh", "-c"]
+    arguments:
+      [
+        "pip install vllm && ray start --address=${BEAKER_LEADER_REPLICA_HOSTNAME}:8888 --block",
+      ]
+    hostNetworking: true
+    datasets:
+      - mountPath: /weka/oe-adapt-default
+        source:
+          weka: oe-adapt-default
+    constraints:
+      cluster:
+        - ai2/jupiter-cirrascale-2
+    resources:
+      gpuCount: 2
+    context:
+      priority: urgent
