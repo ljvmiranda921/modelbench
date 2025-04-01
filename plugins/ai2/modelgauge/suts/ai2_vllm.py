@@ -11,6 +11,7 @@ from pydantic import BaseModel
 
 from modelgauge.prompt import ChatPrompt, ChatRole, TextPrompt
 from modelgauge.retry_decorator import retry
+from modelgauge.secret_values import InjectSecret, RequiredSecret, SecretDescription
 from modelgauge.sut import PromptResponseSUT, SUTOptions, SUTResponse
 from modelgauge.sut import TokenProbability, TopTokens
 from modelgauge.sut_capabilities import AcceptsChatPrompt, AcceptsTextPrompt
@@ -27,13 +28,21 @@ class OpenAIChatMessage(BaseModel):
 _SYSTEM_ROLE = "system"
 _USER_ROLE = "user"
 _ASSISTANT_ROLE = "assistant"
-_TOOL_ROLE = "tool_call_id"
 
 _ROLE_MAP = {
     ChatRole.user: _USER_ROLE,
     ChatRole.sut: _ASSISTANT_ROLE,
     ChatRole.system: _SYSTEM_ROLE,
 }
+
+class VLLMBaseURL(RequiredSecret):
+    @classmethod
+    def description(cls) -> SecretDescription:
+        return SecretDescription(
+            scope="vllm",
+            key="base_url",
+            instructions="The base URL for querying models"
+        )
 
 
 class OpenAIChatRequest(BaseModel):
@@ -59,7 +68,7 @@ class OpenAIChatRequest(BaseModel):
 @modelgauge_sut(
     capabilities=[AcceptsTextPrompt, AcceptsChatPrompt, ProducesPerTokenLogProbabilities]
 )
-class OpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
+class VLLMOpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
     """
     Documented at https://platform.openai.com/docs/api-reference/chat/create
     """
@@ -124,3 +133,10 @@ class OpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
                 logprobs.append(TopTokens(top_tokens=top_tokens))
         assert text is not None
         return SUTResponse(text=text, top_logprobs=logprobs)
+
+SUTS.register(
+    VLLMOpenAIChat,
+    "allenai___OLMo-2-0325-32B-Instruct",
+    "/weka/oe-adapt-default/ljm/models/allenai___OLMo-2-0325-32B-Instruct",
+    "http://jupiter-cs-aus-115.reviz.ai2.in:8000/v1",
+)
