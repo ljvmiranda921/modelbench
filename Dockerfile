@@ -1,5 +1,4 @@
-# Base Stage
-FROM python:3.10-slim AS base
+FROM pytorch/pytorch:2.2.2-cuda12.1-cudnn8-runtime
 
 ENV PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
