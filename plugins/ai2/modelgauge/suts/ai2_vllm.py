@@ -2,6 +2,7 @@
 This calls an OpenAI-compatible server by VLLM.
 """
 
+import os
 from typing import Any, Dict, List, Optional, Union
 
 from openai import APITimeoutError, ConflictError, InternalServerError, OpenAI
@@ -137,5 +138,12 @@ SUTS.register(
     VLLMOpenAIChat,
     "OLMo-2-0325-32B-Instruct",
     "/weka/oe-adapt-default/ljm/models/allenai___OLMo-2-0325-32B-Instruct",
-    "http://jupiter-cs-aus-115.reviz.ai2.in:8000/v1",
+    os.environ.get("VLLM_HOST_BASEURL_OLMO2_32B", None),
+)
+
+SUTS.register(
+    VLLMOpenAIChat,
+    "OLMo-2-1124-13B-Instruct",
+    "/weka/oe-adapt-default/ljm/models/allenai___OLMo-2-1124-13B-Instruct",
+    os.environ.get("VLLM_HOST_BASEURL_OLMO2_13B", None),
 )
