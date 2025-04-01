@@ -13,4 +13,5 @@ WORKDIR /app
 COPY . /app
 RUN pip install --upgrade pip 
 RUN pip install "poetry==2.1.2"
-RUN poetry install --without=dev --no-root --no-interaction --no-ansi
+RUN poetry install 
+RUN poetry install -E ai2

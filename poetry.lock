@@ -2005,6 +2005,23 @@ typing-inspection = ">=0.4.0"
 gcp = ["google-auth (>=2.27.0)", "requests (>=2.32.3)"]
 
 [[package]]
+name = "modelgauge-ai2"
+version = "1.0.0"
+description = ""
+optional = true
+python-versions = "^3.10"
+groups = ["main", "dev"]
+files = []
+develop = true
+
+[package.dependencies]
+openai = "^1.8.0"
+
+[package.source]
+type = "directory"
+url = "plugins/ai2"
+
+[[package]]
 name = "modelgauge-amazon"
 version = "1.0.0"
 description = ""
@@ -4598,7 +4615,8 @@ cffi = {version = ">=1.11", optional = true, markers = "platform_python_implemen
 cffi = ["cffi (>=1.11)"]
 
 [extras]
-all-plugins = ["modelgauge_amazon", "modelgauge_anthropic", "modelgauge_azure", "modelgauge_demo_plugin", "modelgauge_google", "modelgauge_huggingface", "modelgauge_mistral", "modelgauge_nvidia", "modelgauge_openai", "modelgauge_perspective_api", "modelgauge_vertexai"]
+ai2 = ["modelgauge_ai2"]
+all-plugins = ["modelgauge_ai2", "modelgauge_amazon", "modelgauge_anthropic", "modelgauge_azure", "modelgauge_demo_plugin", "modelgauge_google", "modelgauge_huggingface", "modelgauge_mistral", "modelgauge_nvidia", "modelgauge_openai", "modelgauge_perspective_api", "modelgauge_vertexai"]
 amazon = ["modelgauge_amazon"]
 anthropic = ["modelgauge_anthropic"]
 azure = ["modelgauge_azure"]
@@ -4614,4 +4632,4 @@ vertexai = ["modelgauge_vertexai"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,!=3.12.5,<3.13"
-content-hash = "89e8d02dd4c0b963cecd8f895d92880750aae38f1b98e1b7768c058c1a7f8243"
+content-hash = "6b4eb44c911c25f1543b363c030d36d0ebd39e45f64992d3bfe52f2c8e53ceb3"
