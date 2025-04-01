@@ -25,6 +25,7 @@ class OpenAIChatMessage(BaseModel):
     role: str
     name: Optional[str] = None
 
+
 _SYSTEM_ROLE = "system"
 _USER_ROLE = "user"
 _ASSISTANT_ROLE = "assistant"
@@ -35,14 +36,11 @@ _ROLE_MAP = {
     ChatRole.system: _SYSTEM_ROLE,
 }
 
+
 class VLLMBaseURL(RequiredSecret):
     @classmethod
     def description(cls) -> SecretDescription:
-        return SecretDescription(
-            scope="vllm",
-            key="base_url",
-            instructions="The base URL for querying models"
-        )
+        return SecretDescription(scope="vllm", key="base_url", instructions="The base URL for querying models")
 
 
 class OpenAIChatRequest(BaseModel):
@@ -65,9 +63,8 @@ class OpenAIChatRequest(BaseModel):
     tool_choice: Optional[Union[str, Dict]] = None
     user: Optional[str] = None
 
-@modelgauge_sut(
-    capabilities=[AcceptsTextPrompt, AcceptsChatPrompt, ProducesPerTokenLogProbabilities]
-)
+
+@modelgauge_sut(capabilities=[AcceptsTextPrompt, AcceptsChatPrompt, ProducesPerTokenLogProbabilities])
 class VLLMOpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
     """
     Documented at https://platform.openai.com/docs/api-reference/chat/create
@@ -77,6 +74,7 @@ class VLLMOpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
         super().__init__(uid)
         self.model = model
         self.base_url = base_url
+        self.client: Optional[OpenAI] = None
 
     def _load_client(self) -> OpenAI:
         return OpenAI(base_url=self.base_url, max_retries=7)
@@ -133,6 +131,7 @@ class VLLMOpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
                 logprobs.append(TopTokens(top_tokens=top_tokens))
         assert text is not None
         return SUTResponse(text=text, top_logprobs=logprobs)
+
 
 SUTS.register(
     VLLMOpenAIChat,
