@@ -136,7 +136,7 @@ class VLLMOpenAIChat(PromptResponseSUT[OpenAIChatRequest, ChatCompletion]):
 
 SUTS.register(
     VLLMOpenAIChat,
-    "allenai___OLMo-2-0325-32B-Instruct",
+    "OLMo-2-0325-32B-Instruct",
     "/weka/oe-adapt-default/ljm/models/allenai___OLMo-2-0325-32B-Instruct",
     "http://jupiter-cs-aus-115.reviz.ai2.in:8000/v1",
 )
